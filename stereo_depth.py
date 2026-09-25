@@ -63,13 +63,35 @@ def normalize_for_display(image: np.ndarray, valid_mask: np.ndarray) -> np.ndarr
     return preview
 
 
+def read_color_image(image_path: Path) -> np.ndarray | None:
+    """Read a colour image while supporting Windows paths containing Unicode."""
+    try:
+        encoded_bytes = np.fromfile(image_path, dtype=np.uint8)
+    except OSError:
+        return None
+    return cv2.imdecode(encoded_bytes, cv2.IMREAD_COLOR)
+
+
+def save_image(image_path: Path, image: np.ndarray) -> None:
+    """Save an image while supporting Windows paths containing Unicode."""
+    success, encoded_image = cv2.imencode(image_path.suffix, image)
+    if not success:
+        raise RuntimeError(f"Could not encode output image: {image_path}")
+    encoded_image.tofile(image_path)
+
+
 def main() -> None:
+    project_directory = Path(__file__).resolve().parent
     # Define command-line options
     parser = argparse.ArgumentParser(description="OpenCV stereo depth estimation")
     parser.add_argument("--left", type=Path, help="Path to the left image")
     parser.add_argument("--right", type=Path, help="Path to the right image")
-    parser.add_argument("--data-dir", type=Path, default=Path("data"))
-    parser.add_argument("--output", type=Path, default=Path("results"))
+    parser.add_argument(
+        "--data-dir", type=Path, default=project_directory / "data"
+    )
+    parser.add_argument(
+        "--output", type=Path, default=project_directory / "results"
+    )
     parser.add_argument(
         "--num-disparities",
         type=int,
@@ -94,8 +116,8 @@ def main() -> None:
     left_path = options.left or find_default_image("aloeL.jpg", options.data_dir)
     right_path = options.right or find_default_image("aloeR.jpg", options.data_dir)
 
-    left_image = cv2.imread(str(left_path), cv2.IMREAD_COLOR)
-    right_image = cv2.imread(str(right_path), cv2.IMREAD_COLOR)
+    left_image = read_color_image(left_path)
+    right_image = read_color_image(right_path)
 
     if left_image is None or right_image is None:
         raise RuntimeError("One or both input images could not be read")
@@ -144,11 +166,11 @@ def main() -> None:
     options.output.mkdir(parents=True, exist_ok=True)
 
     # Write images and disparity data
-    cv2.imwrite(str(options.output / "left.png"), left_image)
-    cv2.imwrite(str(options.output / "right.png"), right_image)
-    cv2.imwrite(str(options.output / "disparity_gray.png"), disparity_preview)
-    cv2.imwrite(str(options.output / "disparity_color.png"), disparity_color)
-    cv2.imwrite(str(options.output / "relative_depth_color.png"), depth_color)
+    save_image(options.output / "left.png", left_image)
+    save_image(options.output / "right.png", right_image)
+    save_image(options.output / "disparity_gray.png", disparity_preview)
+    save_image(options.output / "disparity_color.png", disparity_color)
+    save_image(options.output / "relative_depth_color.png", depth_color)
     np.save(options.output / "disparity_pixels.npy", disparity)
 
     # Assemble a compact comparison panel
@@ -157,7 +179,7 @@ def main() -> None:
         for img in (left_image, disparity_color, depth_color)
     ]
     panel = cv2.hconcat(thumbnails)
-    cv2.imwrite(str(options.output / "stereo_result_panel.png"), panel)
+    save_image(options.output / "stereo_result_panel.png", panel)
 
     # Report input details and output location
     print(f"Left image: {left_path}")
