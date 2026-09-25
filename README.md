@@ -8,13 +8,7 @@ Robot Vision Lab 02: estimate stereo disparity and relative depth using OpenCV's
 - NumPy
 - OpenCV Python (`opencv-python`)
 
-## Prepare the official OpenCV stereo pair
-
-```powershell
-python download_opencv_samples.py
-```
-
-This downloads OpenCV's `aloeL.jpg` and `aloeR.jpg` sample images into `data/`.
+The repository already includes OpenCV's official `aloeL.jpg` and `aloeR.jpg` sample images in `data/`.
 
 ## Run
 

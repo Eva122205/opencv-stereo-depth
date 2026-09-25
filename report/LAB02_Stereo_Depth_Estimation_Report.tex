@@ -11,6 +11,13 @@
 \usepackage{listings}
 \usepackage{enumitem}
 
+% Allow compilation either from the repository root or from report/.
+\IfFileExists{results/left.png}{
+  \graphicspath{{results/}}
+}{
+  \graphicspath{{../results/}}
+}
+
 % The style below matches the LAB 01 report template.
 \newcommand{\StudentName}{Zhang Linjie}
 \newcommand{\StudentID}{24020036086}
@@ -103,7 +110,7 @@ The script \texttt{download\_opencv\_samples.py} downloads \texttt{aloeL.jpg} an
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.68\textwidth]{../results/left.png}
+  \includegraphics[width=0.68\textwidth]{left.png}
 \caption{Left image from the OpenCV aloe stereo pair.}
 \end{figure}
 
@@ -133,13 +140,13 @@ Generated Output Files & 7 \\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{../results/stereo_result_panel.png}
+\includegraphics[width=\textwidth]{stereo_result_panel.png}
 \caption{Left image, disparity visualization, and relative-depth visualization.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.68\textwidth]{../results/disparity_gray.png}
+\includegraphics[width=0.68\textwidth]{disparity_gray.png}
 \caption{Normalized grayscale disparity map.}
 \end{figure}
 
