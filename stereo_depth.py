@@ -6,6 +6,27 @@ Download the two images into data/ first, or pass their paths with --left and --
 from __future__ import annotations
 import argparse
 from pathlib import Path
+import re
+import sys
+
+
+def discard_foreign_user_site_packages() -> None:
+    """Prevent an IDE from loading packages built for a different Python version."""
+    active_tag = f"python{sys.version_info.major}{sys.version_info.minor}"
+    user_site_pattern = re.compile(
+        r"appdata[\\/]+roaming[\\/]+python[\\/]+(python\d+)[\\/]+site-packages",
+        re.IGNORECASE,
+    )
+    retained_paths = []
+    for search_path in sys.path:
+        matched_path = user_site_pattern.search(search_path)
+        if matched_path and matched_path.group(1).lower() != active_tag:
+            continue
+        retained_paths.append(search_path)
+    sys.path[:] = retained_paths
+
+
+discard_foreign_user_site_packages()
 
 import cv2
 import numpy as np
