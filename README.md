@@ -33,3 +33,14 @@ python stereo_depth.py --left path/to/left.jpg --right path/to/right.jpg --outpu
 ## Notes
 
 The output depth is relative depth because no camera calibration focal length or baseline is supplied. Larger disparity generally corresponds to objects nearer to the camera.
+
+## Build the report with LaTeX
+
+The report source is [`report/LAB02_Stereo_Depth_Estimation_Report.tex`](report/LAB02_Stereo_Depth_Estimation_Report.tex). Compile it from the `report` directory after installing a LaTeX distribution such as TeX Live or MiKTeX:
+
+```powershell
+cd report
+xelatex LAB02_Stereo_Depth_Estimation_Report.tex
+```
+
+The source uses the result images in `../results/`.
