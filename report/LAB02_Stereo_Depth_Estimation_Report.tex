@@ -1,45 +1,67 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2cm]{geometry}
-\usepackage[T1]{fontenc}
+\documentclass[12pt,a4paper]{article}
+\usepackage[left=2.2cm,right=2.2cm,top=1.8cm,bottom=1.8cm]{geometry}
 \usepackage{graphicx}
 \usepackage[table]{xcolor}
-\usepackage{booktabs}
+\usepackage{amsmath}
 \usepackage{array}
+\usepackage{tabularx}
 \usepackage{float}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
-\usepackage{titlesec}
-\usepackage{caption}
+\usepackage{listings}
+\usepackage{enumitem}
 
-\definecolor{labgreen}{HTML}{2F7456}
-\definecolor{lightgreen}{HTML}{EAF3EE}
-\hypersetup{colorlinks=true,urlcolor=labgreen,linkcolor=labgreen}
-\titleformat{\section}{\Large\bfseries\color{labgreen}}{\thesection}{0.6em}{}
-\titleformat{\subsection}{\large\bfseries\color{labgreen}}{\thesubsection}{0.6em}{}
+% The style below matches the LAB 01 report template.
+\newcommand{\StudentName}{Zhang Linjie}
+\newcommand{\StudentID}{24020036086}
+\newcommand{\ReportDate}{September 25, 2026}
+\newcommand{\CourseName}{Robot Vision}
+\definecolor{MainGreen}{HTML}{2E6B4E}
+\definecolor{LightGreen}{HTML}{EEF5F0}
+\definecolor{LighterGreen}{HTML}{F4F8F5}
+\definecolor{MainText}{HTML}{1F2933}
+\definecolor{GrayText}{HTML}{68737D}
+\definecolor{TableLine}{HTML}{D9E1E5}
+\colorlet{labgreen}{MainGreen}
+\colorlet{lightgreen}{LightGreen}
+\color{MainText}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.4em}
+\linespread{1.3}
+\newcommand{\reportsection}[2]{\vspace{1.1em}\noindent{\fontsize{15pt}{19pt}\selectfont\bfseries\color{MainText}#1\quad #2}\par\vspace{0.6em}}
+\newcommand{\reportsubsection}[2]{\vspace{0.7em}\noindent{\fontsize{14pt}{18pt}\selectfont\bfseries\color{MainGreen}#1\quad #2}\par\vspace{0.3em}}
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{\small LAB 02 \quad Robot Vision}
-\cfoot{\small Stereo Depth Estimation Report \quad | \quad \thepage}
+\fancyhead[R]{\small\color{GrayText}LAB 02\quad Robot Vision}
+\fancyfoot[C]{\small\color{GrayText}Stereo Depth Estimation Report\quad·\quad\thepage}
 \renewcommand{\headrulewidth}{0pt}
-\setlength{\parindent}{2em}
-\setlength{\parskip}{0.35em}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{14pt}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\renewcommand{\arraystretch}{1.45}
+\arrayrulecolor{TableLine}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,rulecolor=\color{TableLine},backgroundcolor=\color{LighterGreen},xleftmargin=0.5em,xrightmargin=0.5em,aboveskip=0.5em,belowskip=0.5em,showstringspaces=false}
+\hypersetup{colorlinks=true,urlcolor=MainGreen,linkcolor=MainGreen}
 
 \begin{document}
 
-{\large\bfseries\color{labgreen} LAB REPORT / ROBOT VISION\par}
-\vspace{0.5em}
-{\LARGE\bfseries Stereo Depth Estimation Using OpenCV\par}
-\vspace{0.3em}
-{\large\color{gray} Based on the OpenCV Aloe Stereo Pair and StereoSGBM\par}
+{\bfseries\color{MainGreen} LAB REPORT / ROBOT VISION\par}
 \vspace{1.2em}
+{\fontsize{16pt}{21pt}\selectfont\bfseries Stereo Depth Estimation Using OpenCV\par}
+\vspace{0.5em}
+{\fontsize{14pt}{18pt}\selectfont\color{GrayText} Based on the OpenCV Aloe Stereo Pair and StereoSGBM\par}
+\vspace{1.8em}
 
 \renewcommand{\arraystretch}{1.45}
-\begin{tabular}{>{\columncolor{lightgreen}\bfseries}p{2cm}p{4.6cm}>{\columncolor{lightgreen}\bfseries}p{2.4cm}p{4.2cm}}
-Name & Zhang Linjie & Student ID & 24020036086 \\
-Date & September 25, 2026 & Course & Robot Vision \\
-\end{tabular}
+\begin{tabularx}{\textwidth}{>{\columncolor{LightGreen}\bfseries\color{GrayText}}p{2.4cm}X>{\columncolor{LightGreen}\bfseries\color{GrayText}}p{2.4cm}X}
+\hline
+Name & \StudentName & Student ID & \StudentID \\
+\hline
+Date & \ReportDate & Course & \CourseName \\
+\hline
+\end{tabularx}
 
-\section{Experiment Overview}
+\reportsection{01}{Experiment Overview}
 This experiment implements binocular disparity estimation and relative-depth visualization with OpenCV. The official OpenCV aloe stereo pair is used as input. StereoSGBM matches corresponding pixels, and the fixed-point output is converted to pixel disparity for visualization.
 
 The execution completed successfully on images of $1282 \times 1110$ pixels. The positive-disparity ratio was 78.07\%. It expresses the coverage of usable disparity rather than an accuracy measurement.
@@ -53,12 +75,13 @@ AloeL / AloeR & $1282 \times 1110$ px & 78.07\% & Successful \\
 \end{tabular}
 \end{table}
 
-\section{Principle of Stereo Depth Estimation}
+\reportsection{02}{Principle of Stereo Depth Estimation}
 After stereo rectification, corresponding points lie on the same horizontal line. Their horizontal displacement is disparity $d$. With focal length $f$ and baseline $B$, metric depth is $Z=fB/d$. Nearby objects therefore have larger disparity, while distant objects have smaller disparity.
 
 The supplied pair is suitable for matching, but calibrated focal length and baseline are not used here. The program therefore displays relative depth $1/d$ rather than distance in metres. Zero or negative disparity is invalid and is displayed in black.
 
-\section{Experimental Environment and Parameters}
+\clearpage
+\reportsection{03}{Experimental Environment and Parameters}
 \begin{table}[H]
 \centering
 \rowcolors{2}{lightgreen}{white}
@@ -74,8 +97,8 @@ Matching Block Size & $5 \times 5$ \\
 \end{tabular}
 \end{table}
 
-\section{Experimental Method}
-\subsection{Input Preparation}
+\reportsection{04}{Experimental Method}
+\reportsubsection{4.1}{Input Preparation}
 The script \texttt{download\_opencv\_samples.py} downloads \texttt{aloeL.jpg} and \texttt{aloeR.jpg} from the official OpenCV sample-data repository into the \texttt{data/} directory. The images are two views of the same static scene and have identical dimensions.
 
 \begin{figure}[H]
@@ -84,15 +107,17 @@ The script \texttt{download\_opencv\_samples.py} downloads \texttt{aloeL.jpg} an
 \caption{Left image from the OpenCV aloe stereo pair.}
 \end{figure}
 
-\subsection{Disparity Computation}
+\reportsubsection{4.2}{Disparity Computation}
 Both images are converted to grayscale. StereoSGBM uses 128 disparities, a $5 \times 5$ matching window, uniqueness filtering, and speckle filtering. The returned fixed-point disparity is divided by 16.0 to obtain pixel disparity.
 
-\subsection{Relative-depth Visualization}
+\reportsubsection{4.3}{Relative-depth Visualization}
 For valid pixels, relative depth is computed as $1/d$. The 2nd and 98th percentiles normalize the displayed range. A TURBO colour map makes changes in disparity and relative depth easier to inspect.
 
-\begin{center}\colorbox{lightgreen}{\texttt{python stereo\_depth.py}}\end{center}
+\begin{lstlisting}
+python stereo_depth.py
+\end{lstlisting}
 
-\section{Experimental Results}
+\reportsection{05}{Experimental Results}
 \begin{table}[H]
 \centering
 \rowcolors{2}{lightgreen}{white}
@@ -118,17 +143,17 @@ Generated Output Files & 7 \\
 \caption{Normalized grayscale disparity map.}
 \end{figure}
 
-\section{Analysis and Discussion}
+\reportsection{06}{Analysis and Discussion}
 The plant leaves and flowerpot are estimated as closer than the patterned background because their disparities are larger. These regions have clear boundaries and rich texture, which supports reliable correspondence matching. The background has smaller disparity and appears in a different colour range.
 
 Black regions occur where matching is unreliable, especially at occlusion boundaries, narrow leaf edges, and weakly textured areas. A pixel visible in one camera may be hidden in the other, so a valid correspondence is not always available. Repeated patterns can also create ambiguous matches.
 
 A calibrated stereo camera would enable metric depth using focal length and baseline. Further improvement would include camera calibration, stereo rectification, and parameter tuning for the particular scene. This result is appropriate for comparing relative distance in the image pair, but not for reporting physical distance.
 
-\section{Conclusion}
+\reportsection{07}{Conclusion}
 This experiment successfully implemented OpenCV-based stereo depth estimation with the official aloe stereo data. StereoSGBM produced a valid disparity ratio of 78.07\%, and the program exported disparity images, a relative-depth image, raw disparity data, and a comparison panel. The result demonstrates the inverse relationship between disparity and scene depth.
 
-\section{Submission Record}
+\reportsection{08}{Submission Record}
 \begin{tabular}{p{4cm}p{9cm}}
 \rowcolor{labgreen}\color{white}\bfseries Item & \color{white}\bfseries Record \\
 \rowcolor{lightgreen}GitHub Repository & \url{https://github.com/Eva122205/opencv-stereo-depth} \\
@@ -137,8 +162,8 @@ Results Commit & \texttt{739245f} -- Add stereo disparity and relative depth res
 Report Commit & \texttt{4815395} -- Add stereo depth estimation lab report \\
 \end{tabular}
 
-\section{References}
-\begin{enumerate}
+\reportsection{09}{References}
+\begin{enumerate}[label={\arabic*},leftmargin=2em]
 \item OpenCV Documentation. StereoSGBM Class Reference.
 \item OpenCV Sample Data Repository. \texttt{aloeL.jpg} and \texttt{aloeR.jpg} stereo pair.
 \item H. Hirschmuller. Stereo Processing by Semiglobal Matching and Mutual Information. IEEE TPAMI, 2008.
